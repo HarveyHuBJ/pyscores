@@ -375,7 +375,7 @@ def calculate_students(df_scores, df_levels, config):
 if __name__ == '__main__':
     
     # 接收用户输入
-    grade = 7; # int(input('请输入年级： (7, 8, 9)'))
+    grade = int(input('请输入年级： (7, 8, 9)'))
     
     while grade not in [7, 8, 9]:
         grade = int(input('输入有误，请输入年级： (7, 8, 9)'))
@@ -394,11 +394,11 @@ if __name__ == '__main__':
     calculate_students(df_scores, df_levels, config)
     
     # save Excel
-    # df_scores.to_csv(f'output/{grade_name}/scores-result.csv', encoding='utf-8', index=False)
-    # print('保存成功')
+    df_scores.to_csv(f'output/{grade_name}/scores-result.csv', encoding='utf-8', index=False)
+    print('保存成功')
     
-    # # 保存成绩单
-    # save_students_report(df_scores, config, grade_name)
+    # 保存成绩单
+    save_students_report(df_scores, config, grade_name)
     
     df_classes = calculate_classes(df_scores, df_levels, config)
     
