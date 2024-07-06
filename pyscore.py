@@ -178,7 +178,7 @@ def save_classes_report(df, config, grade_name):
         html.append('\n'.join([f'''
         <tr>
             <th>{course}</th>
-            <td>{class_data[f'{course}平均分']}</td>
+            <td>{class_data[f'{course}平均分']:.2f}</td>
             <td>{class_data[f'{course}最高分']}</td>
             <td>{class_data[f'{course}最低分']}</td>
             <td>{class_data[f'{course}中位数']}</td>
@@ -187,8 +187,8 @@ def save_classes_report(df, config, grade_name):
         ''' for course in all_courses]) )
         
         html.append( f'''
-        <tr><th>四科总分</th><td>{class_data['四科平均分']}</td><td>{class_data['四科最高分']}</td><td>{class_data['四科最低分']}</td><td>{class_data['四科中位数']}</td><td>{class_data['四科标准差']:.2f}</td></tr>
-        <tr><th>七科总分</th><td>{class_data['七科平均分']}</td><td>{class_data['七科最高分']}</td><td>{class_data['七科最低分']}</td><td>{class_data['七科中位数']}</td><td>{class_data['七科标准差']:.2f}</td></tr>
+        <tr><th>四科总分</th><td>{class_data['四科平均分']:.2f}</td><td>{class_data['四科最高分']}</td><td>{class_data['四科最低分']}</td><td>{class_data['四科中位数']}</td><td>{class_data['四科标准差']:.2f}</td></tr>
+        <tr><th>七科总分</th><td>{class_data['七科平均分']:.2f}</td><td>{class_data['七科最高分']}</td><td>{class_data['七科最低分']}</td><td>{class_data['七科中位数']}</td><td>{class_data['七科标准差']:.2f}</td></tr>
         </table>
         <table>
         <tr><th>科目</th><th>A级成绩名单</th><th>B级成绩名单</th><th>C级成绩名单</th><th>D级成绩名单</th></tr>
@@ -386,9 +386,9 @@ if __name__ == '__main__':
     df_levels = read_levels_of_grade(grade_name)
     config = read_config(grade_name)
     
-    # 判断output目录是否存在，不存在则创建
-    if not os.path.exists('output'):
-        os.mkdir('output')
+    # 判断output/{grade_name}目录是否存在，不存在则创建
+    if not os.path.exists(f'output/{grade_name}'):
+        os.makedirs(f'output/{grade_name}')
         
     
     calculate_students(df_scores, df_levels, config)
@@ -402,6 +402,8 @@ if __name__ == '__main__':
     
     df_classes = calculate_classes(df_scores, df_levels, config)
     
+        # 判断output目录是否存在，不存在则创建
+
     # save Excel
     df_classes.to_csv(f'output/{grade_name}/classes-result.csv', encoding='utf-8', index=False)
     
