@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import json
 import os
-
+import imgkit
 
 def load_data(csv_file):
     # 读取Excel数据
@@ -119,6 +119,13 @@ def save_students_report(df, config, grade_name):
         with open(f'output/{grade_name}/{identity}.html', 'w', encoding='utf-8') as f:
             f.write(htmls)
         print(f'{identity}的成绩单保存成功')
+        
+        # 保存为png图片
+        options = {
+                'format': 'png',
+                'quiet': ''
+            }
+        imgkit.from_string(htmls, f'output/{grade_name}/{identity}.png', options=options)
     pass
 
 
@@ -236,7 +243,11 @@ def save_classes_report(df, config, grade_name):
         # 保存班级报告
         with open(f'output/{grade_name}/{identity}.html', 'w', encoding='utf-8') as f:
             f.write(htmls)
+        
+
+
         print(f'{identity}的班级报告保存成功')
+
     pass
 
     
@@ -343,7 +354,7 @@ def calculate_students(df_scores, df_levels, config):
     labels = list(df_levels['线级'].values)
     
     for course in all_courses:
-        df_scores[f'{course}线级'] = pd.cut(df_scores[course], bins=list(df_levels[course].values)+[1000], labels=labels)
+        df_scores[f'{course}线级'] = pd.cut(df_scores[course], bins=list(df_levels[course].values)+[1000], labels=labels, right=False)
         df_scores["A线数量"] = df_scores.apply(lambda x: sum([1 for i in x[11:] if i == 'A线']), axis=1)
        
     for course in all_courses:
@@ -355,7 +366,7 @@ def calculate_students(df_scores, df_levels, config):
         
         
         
-    df_scores['四科总分线级'] = pd.cut(df_scores['四科总分'], bins=list(df_levels['四科总分'].values)+[1000], labels=labels)
+    df_scores['四科总分线级'] = pd.cut(df_scores['四科总分'], bins=list(df_levels['四科总分'].values)+[1000], labels=labels, right=False)
     # 给df增加列， 分别按照四科总分和七科总分排名，最高分排名第一，取整数排名
     df_scores['四科年级排名'] = df_scores['四科总分'].rank(method='min', ascending=False)
     df_scores['四科年级排名并列人数'] =  df_scores['四科年级排名'].map(df_scores['四科年级排名'].value_counts())
@@ -364,7 +375,7 @@ def calculate_students(df_scores, df_levels, config):
     df_scores['四科班级排名'] = df_scores.groupby('班级')['四科总分'].rank(method='min', ascending=False)
     df_scores['四科班级排名并列人数'] = df_scores.groupby(['班级', '四科总分'])['学生'].transform('count')
 
-    df_scores['七科总分线级'] = pd.cut(df_scores['七科总分'], bins=list(df_levels['七科总分'].values)+[1000], labels=labels)
+    df_scores['七科总分线级'] = pd.cut(df_scores['七科总分'], bins=list(df_levels['七科总分'].values)+[1000], labels=labels, right=False)
     df_scores['七科班级排名'] = df_scores.groupby('班级')['七科总分'].rank(method='min', ascending=False)
     df_scores['七科班级排名并列人数'] = df_scores.groupby(['班级', '七科总分'])['学生'].transform('count')
     df_scores['七科年级排名'] = df_scores['七科总分'].rank(method='min', ascending=False)
@@ -409,3 +420,6 @@ if __name__ == '__main__':
     df_classes.to_csv(f'output/{grade_name}/classes-result.csv', encoding='utf-8', index=False)
     
     save_classes_report(df_classes, config, grade_name)
+    
+    # Wait an input to close the program
+    input("Press Enter to close the program") 
