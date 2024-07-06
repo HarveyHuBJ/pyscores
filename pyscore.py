@@ -99,8 +99,9 @@ def save_students_report(df, config, grade_name):
         '''
         )
         html.append('\n'.join([row_render(student, course) for course in all_courses]) )
+        # NOTE： {student['四科总分线级']} 没有四科线，所以这里不显示
         html.append( f'''
-        <tr><th>四科总分</th><td>{student['四科总分']}</td><td>{student['四科总分线级']}</td><td>{class_rank_desc(student,'四科')}</td><td>{grade_rank_desc(student,'四科')}</td></tr>
+        <tr><th>四科总分</th><td>{student['四科总分']}</td><td> -- </td><td>{class_rank_desc(student,'四科')}</td><td>{grade_rank_desc(student,'四科')}</td></tr>
         <tr><th>七科总分</th><td>{student['七科总分']}</td><td>{student['七科总分线级']}</td><td>{class_rank_desc(student,'七科')}</td><td>{grade_rank_desc(student,'七科')}</td></tr>
         </table>
         </body>
