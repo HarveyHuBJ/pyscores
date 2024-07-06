@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import json
 import os
-import imgkit
+# import imgkit
 
 def load_data(csv_file):
     # 读取Excel数据
@@ -121,11 +121,11 @@ def save_students_report(df, config, grade_name):
         print(f'{identity}的成绩单保存成功')
         
         # 保存为png图片
-        options = {
-                'format': 'png',
-                'quiet': ''
-            }
-        imgkit.from_string(htmls, f'output/{grade_name}/{identity}.png', options=options)
+        # options = {
+        #         'format': 'png',
+        #         'quiet': ''
+        #     }
+        # imgkit.from_string(htmls, f'output/{grade_name}/{identity}.png', options=options)
     pass
 
 
