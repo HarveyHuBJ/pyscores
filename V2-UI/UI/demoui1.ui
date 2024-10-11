@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>479</width>
-    <height>562</height>
+    <width>555</width>
+    <height>407</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>中学学生成绩单</string>
+   <string>中学生成绩单生成器</string>
   </property>
   <property name="styleSheet">
    <string notr="true">#labelTitle{ font-size:24px; color:#443399 }</string>
@@ -21,11 +21,21 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QLabel" name="labelTitle">
-        <property name="text">
-         <string>中学生成绩单报告生成器</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="labelTitle">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>中学生成绩单生成器</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_12">
@@ -41,6 +51,19 @@
            <string>学校</string>
           </property>
          </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>16</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item>
          <widget class="QLineEdit" name="txt_school">
@@ -70,6 +93,19 @@
          </widget>
         </item>
         <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>12</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <widget class="QComboBox" name="cb_grade">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -95,6 +131,19 @@
            <string>考试</string>
           </property>
          </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>12</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item>
          <widget class="QComboBox" name="cb_exam">
@@ -131,6 +180,9 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="text">
+           <string comment="请选择包含学生成绩的csv文件" extracomment="请选择包含学生成绩的csv文件3"/>
+          </property>
          </widget>
         </item>
         <item>
@@ -143,17 +195,6 @@
           </property>
           <property name="text">
            <string>...</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item alignment="">
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>（请选择包含学生成绩的csv文件）</string>
           </property>
          </widget>
         </item>
@@ -200,51 +241,48 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
         <item>
-         <widget class="QLabel" name="label_6">
+         <widget class="QLabel" name="label_5">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-            <horstretch>0</horstretch>
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>1</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
           <property name="text">
-           <string>（请选择成绩单保存路径）</string>
+           <string>计算任务</string>
           </property>
          </widget>
         </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_8">
         <item>
-         <widget class="QLabel" name="label_5">
+         <widget class="QCheckBox" name="chk_personal">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
-           <string>处理过程</string>
+           <string>个人成绩单</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <widget class="QCheckBox" name="chk_personal">
-            <property name="text">
-             <string>个人成绩单</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="chk_class">
-            <property name="text">
-             <string>班级统计</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QCheckBox" name="chk_class">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>班级成绩统计</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -289,27 +327,15 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>479</width>
+     <width>555</width>
      <height>33</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuStart">
-    <property name="title">
-     <string>开始</string>
-    </property>
-   </widget>
    <widget class="QMenu" name="menuReadme">
     <property name="title">
      <string>说明</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menuGradeConfig">
-    <property name="title">
-     <string>年级配置</string>
-    </property>
-   </widget>
-   <addaction name="menuStart"/>
-   <addaction name="menuGradeConfig"/>
    <addaction name="menuReadme"/>
   </widget>
  </widget>

@@ -1,0 +1,66 @@
+
+        
+<html>
+    <head>
+        <style>
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            th, td {
+                border: 1px solid black;
+                padding: 8px;
+                text-align: center;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+            tr.sum>td{
+                font-weight: bold;
+                background-color: #f8f8f8;
+            }
+            h1{text-align:center;}
+            span.level{ display: inline-block; width: 22px; margin-right: 12px; }
+            span.class_a{background-color:rgb(212, 34, 14);}
+            span.class_b{background-color:rgb(239, 139, 68);}
+            span.class_c{background-color:rgb(243, 198, 50);}
+            span.class_d{background-color:rgb(144, 243, 111);}
+            span.class_f{background-color:rgb(5, 92, 35);}
+            em{color:red;}
+            .gray{color:gray; font-size: 12px;}
+        </style>
+    </head>
+    <body>
+        <h1>{{title}}-成绩单</h1>
+        <table>
+            <tr><th>学生</th><td colspan='4'>{{student_name}}</td></tr>
+            <tr><th>班级</th><td colspan='4'>{{class_name}}</td></tr>
+            <tr><th>科目</th><th>考试成绩</th><th>线级</th><th>班级排名</th><th>年级排名</th></tr>
+            
+            {% for s in subject_scores %}
+                <tr>
+                    <th>  {{s.subject}} {% if(s.is_major)%} <em>(*)</em>  {%endif%} </th>
+                    <td>{{s.score}}</td>
+                    <td><span class="level {{s.get_level_desc()}}">&nbsp;&nbsp;</span>{{s.score_level}}<span class="gray">({{s.score_level_bound}})</span></td>
+                    <td>{{s.get_class_rank_desc()}}</td>
+                    <td>{{s.get_grade_rank_desc()}}</td>
+                </tr>
+                
+            {% endfor %}
+                
+            {% for s in summary %}
+                <tr class="sum">
+                    <th>  {{s.subject}} {% if(s.is_major)%} <em>(*)</em>  {%endif%} </th>
+                    <td>{{s.score}}</td>
+                    <td><span class="level {{s.get_level_desc()}}">&nbsp;&nbsp;</span>{{s.score_level}}<span class="gray">({{s.score_level_bound}})</span></td>
+                    <td>{{s.get_class_rank_desc()}}</td>
+                    <td>{{s.get_grade_rank_desc()}}</td>
+                
+                </tr>
+
+            {% endfor %}
+     
+        </table>
+    </body>
+</html>    
+            

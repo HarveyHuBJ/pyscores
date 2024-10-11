@@ -1,0 +1,164 @@
+<html>
+
+<head>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+            vertical-align: text-top;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        ul {
+            list-style-type: none;
+            text-align: justify;
+        }
+
+        li {
+            display: inline-block;
+            width: 90px;
+            margin-right: 10px;
+        }
+
+        div.h3 {
+            font-size: 20px;
+            font-weight: bold;
+            padding-left: 40px;
+            text-align: left;
+        }
+
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>{{title}}-班级报告</h1>
+    <table>
+        <tr>
+            <th>班级</th>
+            <td colspan='5'>{{class_name}}</td>
+        </tr>
+        <tr>
+            <th>学生人数</th>
+            <td colspan='5'>{{student_amount}}</td>
+        </tr>
+        <tr>
+            <th>科目</th>
+            <th>平均分</th>
+            <th>最高分</th>
+            <th>最低分</th>
+            <th>中位数</th>
+            <th>标准差</th>
+        </tr>
+
+        {% for item in subject_scores %}
+        <tr>
+            <th>{{item.subject}}</th>
+            <td>{{item.average_score}}</td>
+            <td>{{item.top_score}}</td>
+            <td>{{item.bottom_score}}</td>
+            <td>{{item.median_score}}</td>
+            <td>{{item.stderr}}</td>
+        </tr>
+        {% endfor %}
+ 
+    </table>
+    <table>
+        <tr>
+            <th>科目</th>
+            <th>A级成绩名单</th>
+            <th>B级成绩名单</th>
+            <th>C级成绩名单</th>
+            <th>D级成绩名单</th>
+        </tr>
+
+        {% for sd in subject_distributions %}
+
+        <tr>
+            <th>{{sd.subject}}</th>
+            <td>
+                <div class="h3">{sd.level_a_amount}人</div>
+                <div>
+                    <ul>
+                        {% for student in sd.level_a_students %}
+                        <li>{{student.name}}(student.score)</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </td>
+            
+            <td>
+                <div class="h3">{sd.level_b_amount}人</div>
+                <div>
+                    <ul>
+                        {% for student in sd.level_b_students %}
+                        <li>{{student.name}}(student.score)</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </td>
+            
+            <td>
+                <div class="h3">{sd.level_c_amount}人</div>
+                <div>
+                    <ul>
+                        {% for student in sd.level_c_students %}
+                        <li>{{student.name}}(student.score)</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </td>
+            
+            <td>
+                <div class="h3">{sd.level_d_amount}人</div>
+                <div>
+                    <ul>
+                        {% for student in sd.level_d_students %}
+                        <li>{{student.name}}(<span>student.score</span>)</li>
+                        
+                        {% endfor %}
+                    </ul>
+                </div>
+            </td>
+            
+        </tr>
+
+    {% endfor %}
+         
+
+
+    </table>
+    <table>
+    {% for lst in level_a_lists %}
+        <tr>
+            <th>{{lst.index}}科A线名单</th>
+            <td>
+                <div class="h3">{{lst.amount}}人</div>
+                <div>
+                    <ul>
+                        {% for student in lst.students %}
+                        <li>{{student.name}}(<span>{{student.score}}</span>)</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}    
+
+
+    </table>
+</body>
+
+ 

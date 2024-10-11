@@ -25,6 +25,7 @@
 # 4. 制作成Exe
 
 ~~~sh
-pyinstaller -F pyscore.py
+pyinstaller -F App.py --noconsole --hidden-import PySide6.QtXml --icon="logo.png" --exclude-module PyQt5
+
 ~~~
 
