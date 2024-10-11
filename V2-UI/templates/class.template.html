@@ -18,16 +18,23 @@
         th {
             background-color: #f2f2f2;
         }
+        a:hover {color: #0000FF;}
+        a{text-decoration: none;}
 
-        ul {
-            list-style-type: none;
-            text-align: justify;
+        /* 设置 ul 的样式 */
+        ul.list {
+            display: flex;        /* 使用 flex 布局 */
+            flex-wrap: wrap;      /* 允许换行 */
+            justify-content: flex-start; /* 左对齐 */
+            list-style-type: none; /* 移除默认的项目符号 */
+            padding: 0;           /* 移除默认的内边距 */
+            margin: 0;            /* 移除默认的外边距 */
         }
 
-        li {
-            display: inline-block;
-            width: 90px;
-            margin-right: 10px;
+        /* 设置 li 的样式 */
+        ul.list li {
+            margin-right: 10px;   /* 右侧间距 */
+            margin-bottom: 10px;  /* 下侧间距 */
         }
 
         div.h3 {
@@ -40,14 +47,26 @@
         h1 {
             text-align: center;
         }
+        span.name{font-size: 12px;}
+        span.level{ display: inline-block; width: 22px; margin-right: 12px; }
+        span.class_a{background-color:rgb(212, 34, 14);}
+        span.class_b{background-color:rgb(239, 139, 68);}
+        span.class_c{background-color:rgb(243, 198, 50);}
+        span.class_d{background-color:rgb(144, 243, 111);}
+        span.class_f{background-color:rgb(5, 92, 35);}
+        hr{ height: 2; }
+        .width10p{width:10%;}
     </style>
+    <base target="_blank">
 </head>
 
 <body>
     <h1>{{title}}-班级报告</h1>
+
+    <div class="h3">各科分数统计</div>
     <table>
         <tr>
-            <th>班级</th>
+            <th class="width10p">班级</th>
             <td colspan='5'>{{class_name}}</td>
         </tr>
         <tr>
@@ -66,22 +85,45 @@
         {% for item in subject_scores %}
         <tr>
             <th>{{item.subject}}</th>
-            <td>{{item.average_score}}</td>
-            <td>{{item.top_score}}</td>
-            <td>{{item.bottom_score}}</td>
-            <td>{{item.median_score}}</td>
-            <td>{{item.stderr}}</td>
+            <td>{{item.average_score | round(2)}}</td>
+            <td>{{item.top_score| round(2)}}</td>
+            <td>{{item.bottom_score| round(2)}}</td>
+            <td>{{item.median_score| round(2)}}</td>
+            <td>{{item.stderr| round(2)}}</td>
         </tr>
         {% endfor %}
  
     </table>
+    <hr/>
+
+    <div class="h3">主课成绩排名</div>
     <table>
         <tr>
-            <th>科目</th>
-            <th>A级成绩名单</th>
-            <th>B级成绩名单</th>
-            <th>C级成绩名单</th>
-            <th>D级成绩名单</th>
+            <th class="width10p">班级排名</th>
+            <th >学生姓名</th>
+            <th>主课成绩</th>
+            <th>年级排名</th> 
+        </tr>
+        {% for item in class_rank_students %}
+        <tr>
+            <td>{{item.class_rank}}</td>
+            <td><a href="./{{class_name}}-{{item.student_name}}.html"> {{item.student_name}}</a></td>
+            <td>{{item.score}}</td>
+            <td>{{item.grade_rank}}</td> 
+        </tr>
+        {% endfor%}
+
+    </table>
+
+    <div class="h3">各科成绩分数线分布</div>
+    <table>
+        <tr>
+            <th class="width10p">科目</th>
+            <th><span class="level class_a">&nbsp;&nbsp;</span>A线学生名单</th>
+            <th><span class="level class_b">&nbsp;&nbsp;</span>B线学生名单</th>
+            <th><span class="level class_c">&nbsp;&nbsp;</span>C线学生名单</th>
+            <th><span class="level class_d">&nbsp;&nbsp;</span>D线学生名单</th>
+            <th><span class="level class_f">&nbsp;&nbsp;</span>F线学生名单</th>
         </tr>
 
         {% for sd in subject_distributions %}
@@ -89,45 +131,60 @@
         <tr>
             <th>{{sd.subject}}</th>
             <td>
-                <div class="h3">{sd.level_a_amount}人</div>
+                <div class="h3">{{sd.level_a_amount}}人</div>
                 <div>
-                    <ul>
+                    <ul class="list"">
                         {% for student in sd.level_a_students %}
-                        <li>{{student.name}}(student.score)</li>
+                        <li><span class="name"><a href="./{{class_name}}-{{student.name}}.html">{{student.name}}({{student.score}})</a></span></li>
                         {% endfor %}
                     </ul>
                 </div>
             </td>
             
             <td>
-                <div class="h3">{sd.level_b_amount}人</div>
+                <div class="h3">{{sd.level_b_amount}}人</div>
                 <div>
-                    <ul>
+                    <ul class="list"">
                         {% for student in sd.level_b_students %}
-                        <li>{{student.name}}(student.score)</li>
+                        <li><span class="name"><a href="./{{class_name}}-{{student.name}}.html">{{student.name}}({{student.score}})</a></span></li>
+                      
                         {% endfor %}
                     </ul>
                 </div>
             </td>
             
             <td>
-                <div class="h3">{sd.level_c_amount}人</div>
+                <div class="h3">{{sd.level_c_amount}}人</div>
                 <div>
-                    <ul>
-                        {% for student in sd.level_c_students %}
-                        <li>{{student.name}}(student.score)</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </td>
-            
-            <td>
-                <div class="h3">{sd.level_d_amount}人</div>
-                <div>
-                    <ul>
-                        {% for student in sd.level_d_students %}
-                        <li>{{student.name}}(<span>student.score</span>)</li>
+                    <ul class="list"">
                         
+                        {% for student in sd.level_c_students %}
+                        <li><span class="name"><a href="./{{class_name}}-{{student.name}}.html">{{student.name}}({{student.score}})</a></span></li>
+                        
+                        {% endfor %}
+                    </ul>
+                </div>
+            </td>
+            
+            <td>
+                <div class="h3">{{sd.level_d_amount}}人</div>
+                <div>
+                    <ul class="list"">
+                        {% for student in sd.level_d_students %}
+                        <li><span class="name"><a href="./{{class_name}}-{{student.name}}.html">{{student.name}}({{student.score}})</a></span></li>
+                       
+                        
+                        {% endfor %}
+                    </ul>
+                </div>
+            </td>
+            <td>
+                <div class="h3">{{sd.level_f_amount}}人</div>
+                <div>
+                    <ul class="list">
+                        {% for student in sd.level_f_students %}
+                        <li><span class="name"><a href="./{{class_name}}-{{student.name}}.html">{{student.name}}({{student.score}})</a></span></li>
+                      
                         {% endfor %}
                     </ul>
                 </div>
@@ -140,16 +197,18 @@
 
 
     </table>
+    <hr/>
+    <div class="h3">A线科目学生统计</div>
     <table>
     {% for lst in level_a_lists %}
         <tr>
-            <th>{{lst.index}}科A线名单</th>
+            <th class="width10p">{{lst.index}}科A线名单</th>
             <td>
                 <div class="h3">{{lst.amount}}人</div>
                 <div>
-                    <ul>
+                    <ul class="list">
                         {% for student in lst.students %}
-                        <li>{{student.name}}(<span>{{student.score}}</span>)</li>
+                        <li><span class="name"><a href="./{{class_name}}-{{student}}.html">{{student}}</a></span></li>
                         {% endfor %}
                     </ul>
                 </div>

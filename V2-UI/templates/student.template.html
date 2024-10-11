@@ -15,10 +15,20 @@
             th {
                 background-color: #f2f2f2;
             }
+            td.alignRight{
+                text-align: right;
+                padding-right: 6%;
+            }
+            td.alignLeft{
+                text-align: left;
+                padding-left: 6%;
+            }
             tr.sum>td{
                 font-weight: bold;
                 background-color: #f8f8f8;
             }
+            a:hover {color: #0000FF;}
+            a{text-decoration: none;}
             h1{text-align:center;}
             span.level{ display: inline-block; width: 22px; margin-right: 12px; }
             span.class_a{background-color:rgb(212, 34, 14);}
@@ -34,16 +44,16 @@
         <h1>{{title}}-成绩单</h1>
         <table>
             <tr><th>学生</th><td colspan='4'>{{student_name}}</td></tr>
-            <tr><th>班级</th><td colspan='4'>{{class_name}}</td></tr>
+            <tr><th>班级</th><td colspan='4'><a href="./{{class_name}}.html">{{class_name}}</a></td></tr>
             <tr><th>科目</th><th>考试成绩</th><th>线级</th><th>班级排名</th><th>年级排名</th></tr>
             
             {% for s in subject_scores %}
                 <tr>
                     <th>  {{s.subject}} {% if(s.is_major)%} <em>(*)</em>  {%endif%} </th>
-                    <td>{{s.score}}</td>
-                    <td><span class="level {{s.get_level_desc()}}">&nbsp;&nbsp;</span>{{s.score_level}}<span class="gray">({{s.score_level_bound}})</span></td>
-                    <td>{{s.get_class_rank_desc()}}</td>
-                    <td>{{s.get_grade_rank_desc()}}</td>
+                    <td class="alignRight">{{s.score}}</td>
+                    <td class="alignLeft"><span class="level {{s.get_level_desc()}}">&nbsp;&nbsp;</span>{{s.score_level}}<span class="gray">({{s.score_level_bound}})</span></td>
+                    <td class="alignLeft">{{s.get_class_rank_desc()}}</td>
+                    <td class="alignLeft">{{s.get_grade_rank_desc()}}</td>
                 </tr>
                 
             {% endfor %}
@@ -51,10 +61,10 @@
             {% for s in summary %}
                 <tr class="sum">
                     <th>  {{s.subject}} {% if(s.is_major)%} <em>(*)</em>  {%endif%} </th>
-                    <td>{{s.score}}</td>
-                    <td><span class="level {{s.get_level_desc()}}">&nbsp;&nbsp;</span>{{s.score_level}}<span class="gray">({{s.score_level_bound}})</span></td>
-                    <td>{{s.get_class_rank_desc()}}</td>
-                    <td>{{s.get_grade_rank_desc()}}</td>
+                    <td class="alignRight">{{s.score}}</td>
+                    <td class="alignLeft"><span class="level {{s.get_level_desc()}}">&nbsp;&nbsp;</span>{{s.score_level}}<span class="gray">({{s.score_level_bound}})</span></td>
+                    <td class="alignLeft">{{s.get_class_rank_desc()}}</td>
+                    <td class="alignLeft">{{s.get_grade_rank_desc()}}</td>
                 
                 </tr>
 
