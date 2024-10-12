@@ -3,3 +3,5 @@ play.ipynb
 dist/
 build/
 __pycache__/
+
+*.pyc

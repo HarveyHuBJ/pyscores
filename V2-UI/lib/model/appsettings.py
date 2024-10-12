@@ -11,9 +11,10 @@ class AppSettings:
 
     def load_defaults(self):
         load_dotenv()
-        self.default_grade = os.getenv("INIT_GRADE", 7)
+        self.default_grade = os.getenv("INIT_GRADE", "初二年级")
         self.default_school = os.getenv("INIT_SCHOOL", "xx学校")
         self.default_exam = os.getenv("INIT_EXAM", "测验")
+        self.default_figure_font = os.getenv("INIT_FIGURE_FONT", "测验")
         pass
 
     def load_grade_config(self, json_file):

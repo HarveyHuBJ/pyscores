@@ -4,9 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
 
 
-# 设置中文字体
-font_path = 'C:\\Windows\\Fonts\\simhei.ttf'  # Windows 系统中的 SimHei 字体
-fontprop = FontProperties(fname=font_path)
+
 
 
 # 颜色设置 
@@ -29,6 +27,9 @@ sys_colors = {
 class SubjectDistributionDrawer:
 
     def __init__(self):
+        # 设置中文字体
+        font_path = os.getenv('INIT_FIGURE_FONT', 'C:\\Windows\\Fonts\\simhei.ttf')  # Windows 系统中的 SimHei 字体
+        self.fontprop = FontProperties(fname=font_path)
         pass
 
     def plot_cluster_bar_chart(self, df, output_path):
@@ -55,6 +56,7 @@ class SubjectDistributionDrawer:
 
         colors = sys_colors['same_saturation']
 
+        fontprop = self.fontprop
         
         # 绘制柱形图并添加数值标签
         for i, score_line in enumerate(score_lines):

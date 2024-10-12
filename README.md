@@ -25,11 +25,13 @@
 # 4. 制作成Exe
 
 ~~~sh
+pyinstaller -F App.py --hidden-import PySide6.QtXml --icon="logo.png" --exclude-module PyQt5
 pyinstaller -F App.py --noconsole --hidden-import PySide6.QtXml --icon="logo.png" --exclude-module PyQt5
 xcopy /Y templates dist\templates
 xcopy /Y /S data dist\data
 xcopy /Y ui dist\ui
 xcopy /Y /S config dist\config
-
+copy .env dist\.env
+copy C:\Windows\Fonts\simhei.ttf dist\simhei.ttf
 ~~~
 

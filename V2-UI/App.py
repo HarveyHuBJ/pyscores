@@ -1,5 +1,6 @@
 import sys
 import os
+
 from datetime import datetime as dt
 from threading import Thread
 from PySide6.QtWidgets import QApplication, QMessageBox, QFileDialog
@@ -8,6 +9,7 @@ from PySide6.QtCore import QObject, Signal,QUrl
 from PySide6.QtGui import QIcon,QDesktopServices
 from jinja2 import Environment, FileSystemLoader
 from matplotlib import pyplot as plt
+from logging import getLogger, DEBUG, FileHandler, StreamHandler,Formatter
 
 from lib.model.Appsettings import AppSettings
 from lib.domain.ScoreReporter import ScoreReporter
@@ -22,6 +24,10 @@ class App_Window():
         self.init_from_config(args)
         self.progress_rate = 0
 
+        # 初始化logger, 文件格式采用日期后缀
+        log_file = f'app.log'  
+        self.logger = self.initLogger(log_file)
+
         # 绑定信号槽
         self.signals = MySignals()
         self.signals.update_progress.connect(self.set_progress)
@@ -31,13 +37,37 @@ class App_Window():
         self.initUI()
         pass
 
+    def initLogger(self, log_file):
+        logger = getLogger(__name__)
+        logger.setLevel(DEBUG)
+
+        # 创建一个 handler，用于写入日志文件
+        file_handler = FileHandler(log_file, encoding="utf-8")
+        file_handler.setLevel(DEBUG)
+
+        # 创建一个 handler，用于输出到控制台
+        console_handler = StreamHandler()
+        console_handler.setLevel(DEBUG)
+
+        formatter = Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        file_handler.setFormatter(formatter)
+        console_handler.setFormatter(formatter)
+
+        # 给 logger 添加 handler
+        logger.addHandler(file_handler)
+        logger.addHandler(console_handler)
+
+        return logger
+
     def alert_msg(self, msgType, msg):
         QMessageBox.warning(None, msgType, msg)
+
     def abspath(self, path):
         if not os.path.isabs(path):
             path = os.path.join(os.getcwd(), path)
 
         return os.path.abspath(path)    
+    
     def init_from_config(self,args):
         # 初始化配置, 从命令行参数中获取或从配置文件.env中读取
         appSettings = AppSettings()
@@ -135,7 +165,7 @@ class App_Window():
         
     def startJob(self):
         # 开启辅助线程处理任务， 并通过信号更新进度条
-        print("开始处理")
+        self.logger.debug("开始处理")
         
         # 创建新的线程执行计算
         thread = Thread(target=self.thread_job)
@@ -144,7 +174,7 @@ class App_Window():
         pass
 
     def stopJob(self):
-        print("停止处理")
+        self.logger.debug("停止处理")
         pass
 
     def browseData(self):
@@ -153,7 +183,7 @@ class App_Window():
         if not file_path:
             return
         self.ui.txt_data_file_path.setText(file_path)
-        print("选择数据文件：", file_path)
+        self.logger.debug("选择数据文件：", file_path)
          
         pass
  
@@ -164,7 +194,7 @@ class App_Window():
             return
 
         self.ui.txt_output_path.setText(directory)
-        print("选择输出路径:",directory)
+        self.logger.debug("选择输出路径:",directory)
 
         pass
 
@@ -200,15 +230,15 @@ class App_Window():
 
     def thread_job(self):
         # 辅助线程处理任务
-        print("辅助线程处理任务")
+        self.logger.debug("辅助线程处理任务")
         year = dt.now().strftime('%Y')
  
 
         try:
             reporter = ScoreReporter(self.get_data_file_path(), self.get_config_file_path(), self.get_levels_file_path())
         except Exception as e:
-            print(e)
-            self.signals.alert_msg.emit("错误", "读取配置文件失败 ！\r\n "+str(e) )
+            self.logger.error(e)
+            self.signals.alert_msg.emit("错误", "读取数据文件失败 ！\r\n "+str(e) )
 
             return
             
@@ -220,47 +250,53 @@ class App_Window():
             os.makedirs(output_path)
 
 
+        try:
 
-        # 渲染学生报告
-        studentReportModels = reporter.calculate_students()
-        if self.ui.chk_personal.isChecked():
-            student_report_template = env.get_template('student.template.html')
-            for studentReportModel in studentReportModels:
-                studentReportModel.title = f'{year}-{self.get_school()}-{self.get_grade()}-{self.get_exam()}'
-                model = studentReportModel.__dict__
-                html = student_report_template.render(model)
-                with open(f'{output_path}/{studentReportModel.class_name}-{studentReportModel.student_name}.html', 'w', encoding='utf-8') as f:
-                    f.write(html)
+            # 渲染学生报告
+            studentReportModels = reporter.calculate_students()
+            if self.ui.chk_personal.isChecked():
+                self.logger.info("开始处理个人成绩单任务")
+                student_report_template = env.get_template('student.template.html')
+                for studentReportModel in studentReportModels:
+                    self.logger.debug(f"开始处理{studentReportModel.class_name}-{studentReportModel.student_name}成绩单")
+                    studentReportModel.title = f'{year}-{self.get_school()}-{self.get_grade()}-{self.get_exam()}'
+                    model = studentReportModel.__dict__
+                    html = student_report_template.render(model)
+                    with open(f'{output_path}/{studentReportModel.class_name}-{studentReportModel.student_name}.html', 'w', encoding='utf-8') as f:
+                        f.write(html)
 
 
-        if self.ui.chk_class.isChecked():
-            # 渲染班级报告
-            classReportModels = reporter.calculate_classes()
-            
-            class_report_template = env.get_template('class.template.html')
-            for classReportModel in classReportModels:
-                classReportModel.title = f'{year}-{self.get_school()}-{self.get_grade()}-{self.get_exam()}'
-                model = classReportModel.__dict__
-                html = class_report_template.render(model)
-                with open(f'{output_path}/{classReportModel.class_name}.html', 'w', encoding='utf-8') as f:
-                    f.write(html)
+            if self.ui.chk_class.isChecked():
+                self.logger.info("开始处理班级成绩单任务")
 
-                # 绘图
+                # 渲染班级报告
+                classReportModels = reporter.calculate_classes()
                 
-                fiture_drawer = SubjectDistributionDrawer()
-                fiture_drawer.plot_cluster_bar_chart(classReportModel.level_distribution_data, f'{self.get_output_path()}/{classReportModel.class_name}-score-distribution.png')    
+                class_report_template = env.get_template('class.template.html')
+                for classReportModel in classReportModels:
+                    self.logger.debug(f"开始处理{classReportModel.class_name}成绩单")
+                    classReportModel.title = f'{year}-{self.get_school()}-{self.get_grade()}-{self.get_exam()}'
+                    model = classReportModel.__dict__
+                    html = class_report_template.render(model)
+                    with open(f'{output_path}/{classReportModel.class_name}.html', 'w', encoding='utf-8') as f:
+                        f.write(html)
 
-        print("成绩单处理任务完成")
+                    # 绘图
+                    
+                    fiture_drawer = SubjectDistributionDrawer()
+                    fiture_drawer.plot_cluster_bar_chart(classReportModel.level_distribution_data, f'{self.get_output_path()}/{classReportModel.class_name}-score-distribution.png')    
 
-        self.signals.alert_msg.emit("完成", "成绩单处理完成! 请在输出文件夹中查看报告。")
+            self.logger.info("成绩单处理任务完成")
 
-        # 打开输出文件夹
-        QDesktopServices.openUrl(QUrl.fromLocalFile(output_path))
+            self.signals.alert_msg.emit("完成", "成绩单处理完成! 请在输出文件夹中查看报告。")
+            # 打开输出文件夹
+            QDesktopServices.openUrl(QUrl.fromLocalFile(output_path))
+        except Exception as e:
+            self.logger.error(e)
+            self.signals.alert_msg.emit("错误", "处理失败 ！\r\n 请联系维护人员。" )
+
+            return
         pass
-
-    def convert_level_distribution_df(self, models):
-        data ={}
-        data[""]
 
 class MySignals(QObject):
     update_progress = Signal(int)
