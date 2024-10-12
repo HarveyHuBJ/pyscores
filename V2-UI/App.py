@@ -1,15 +1,17 @@
 import sys
 import os
+from datetime import datetime as dt
 from threading import Thread
 from PySide6.QtWidgets import QApplication, QMessageBox, QFileDialog
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtCore import QObject, Signal,QUrl
 from PySide6.QtGui import QIcon,QDesktopServices
 from jinja2 import Environment, FileSystemLoader
-
+from matplotlib import pyplot as plt
 
 from lib.model.Appsettings import AppSettings
 from lib.domain.ScoreReporter import ScoreReporter
+from lib.domain.FigureDrawer import SubjectDistributionDrawer
 
 
  
@@ -59,11 +61,28 @@ class App_Window():
         # 比如 self.ui.button , self.ui.textEdit
         self.ui = QUiLoader().load('UI/demoui1.ui')
 
+        self.initMenus()
         self.initComboBoxes()
         self.initTextBoxes()
         self.bindBtns()
 
         self.hide_progress()
+
+    def initMenus(self):
+        # 菜单点击事件绑定
+        self.ui.actionReadme.triggered.connect(self.showReadme)
+        self.ui.actionContact.triggered.connect(self.showContact)
+
+    def showReadme(self):
+        # 消息提示
+        readme = "由Harvey Hu开发。 \r\n源码参考https://github.com/HarveyHuBJ/pyscores。"
+        QMessageBox.information(None, "程序说明", readme)
+
+        
+    def showContact(self):
+        # 消息提示
+        readme = "QQ:10897366  \r\nEmail:tigerush80@hotmail.com"
+        QMessageBox.information(None, "联系作者", readme)
 
     def bindBtns(self):
         # 绑定按钮事件 btn_start_job btn_browse_data btn_browse_output_path
@@ -156,11 +175,11 @@ class App_Window():
 
     def get_levels_file_path(self):
         # 获取等级文件路径
-        return self.abspath(f"config/{self.default_grade}/levels.csv")
+        return self.abspath(f"config/{self.get_grade()}/levels.csv")
     
     def get_config_file_path(self):
         # 获取配置文件路径
-        return self.abspath(f"config/{self.default_grade}/config.json")
+        return self.abspath(f"config/{self.get_grade()}/config.json")
 
     def get_data_file_path(self):
         # 获取数据文件路径
@@ -182,7 +201,7 @@ class App_Window():
     def thread_job(self):
         # 辅助线程处理任务
         print("辅助线程处理任务")
-
+        year = dt.now().strftime('%Y')
  
 
         try:
@@ -207,7 +226,7 @@ class App_Window():
         if self.ui.chk_personal.isChecked():
             student_report_template = env.get_template('student.template.html')
             for studentReportModel in studentReportModels:
-                studentReportModel.title = f'{self.get_school()}-{self.get_grade()}-{self.get_exam()}'
+                studentReportModel.title = f'{year}-{self.get_school()}-{self.get_grade()}-{self.get_exam()}'
                 model = studentReportModel.__dict__
                 html = student_report_template.render(model)
                 with open(f'{output_path}/{studentReportModel.class_name}-{studentReportModel.student_name}.html', 'w', encoding='utf-8') as f:
@@ -217,13 +236,19 @@ class App_Window():
         if self.ui.chk_class.isChecked():
             # 渲染班级报告
             classReportModels = reporter.calculate_classes()
+            
             class_report_template = env.get_template('class.template.html')
             for classReportModel in classReportModels:
-                classReportModel.title = f'{self.get_school()}-{self.get_grade()}-{self.get_exam()}'
+                classReportModel.title = f'{year}-{self.get_school()}-{self.get_grade()}-{self.get_exam()}'
                 model = classReportModel.__dict__
                 html = class_report_template.render(model)
                 with open(f'{output_path}/{classReportModel.class_name}.html', 'w', encoding='utf-8') as f:
                     f.write(html)
+
+                # 绘图
+                
+                fiture_drawer = SubjectDistributionDrawer()
+                fiture_drawer.plot_cluster_bar_chart(classReportModel.level_distribution_data, f'{self.get_output_path()}/{classReportModel.class_name}-score-distribution.png')    
 
         print("成绩单处理任务完成")
 
@@ -232,6 +257,10 @@ class App_Window():
         # 打开输出文件夹
         QDesktopServices.openUrl(QUrl.fromLocalFile(output_path))
         pass
+
+    def convert_level_distribution_df(self, models):
+        data ={}
+        data[""]
 
 class MySignals(QObject):
     update_progress = Signal(int)

@@ -173,16 +173,28 @@ class ScoreReporter:
                                                                         level_b_students=row[f'{subject}B线成绩名单'],
                                                                         level_c_students=row[f'{subject}C线成绩名单'],
                                                                         level_d_students=row[f'{subject}D线成绩名单'],
-                                                                        level_f_students=row[f'{subject}D线成绩名单']
+                                                                        level_f_students=row[f'{subject}F线成绩名单']
                                                                         )
                                                                         for subject in all_courses  
                                                                         ]
+     
+
             class_report.subjects = main_courses
+
+            # 组合成data frame: level_distribution_data
+            detail_df = pd.concat(
+                                m.to_dataframe() for m in class_report.subject_distributions
+                                    ).set_index('学科名称')
+
+            class_report.level_distribution_data = detail_df.pivot_table(values='人数', index=detail_df.index, columns='分数线', aggfunc=np.sum)
+
             # 按班级筛选df_scores， 并按总分排序， 取各课成绩，转为ClassRankStudentModel
-            class_report.class_rank_students = df_scores[df_scores['班级'] == row['班级']].sort_values(by='主课总分', ascending=False).apply(
+            class_df_scores = df_scores[df_scores['班级'] == row['班级']]
+            class_report.class_rank_students = class_df_scores.sort_values(by='主课总分', ascending=False).apply(
                                                                             lambda x: ClassRankStudentModel(class_rank=x['主课班级排名'], 
                                                                                                     name=x['学生'], 
                                                                                                     score=x['主课总分'], 
+                                                                                                    score_all=x['全部总分'], 
                                                                                                     grade_rank=x['主课年级排名']), axis=1).tolist() 
 
             class_report.level_a_lists = [LevelStatisticsModel(
@@ -192,6 +204,8 @@ class ScoreReporter:
                                           for i in range(8)
                                           ]
 
+           
+
             result.append(class_report)
         return result
             
@@ -199,6 +213,7 @@ class ScoreReporter:
     
 
     def calculate_students(self):
+        # 计算处理学生成绩单
         
         df_scores, df_levels, config = self.df_scores, self.levels, self.config
 

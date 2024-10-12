@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>555</width>
-    <height>407</height>
+    <width>812</width>
+    <height>473</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>中学生成绩单生成器</string>
+   <string>中学生成绩单生成程序</string>
   </property>
   <property name="styleSheet">
    <string notr="true">#labelTitle{ font-size:24px; color:#443399 }</string>
@@ -31,7 +31,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>中学生成绩单生成器</string>
+           <string>中学生成绩单生成程序</string>
           </property>
          </widget>
         </item>
@@ -282,6 +282,9 @@
           <property name="text">
            <string>班级成绩统计</string>
           </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
        </layout>
@@ -327,7 +330,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>555</width>
+     <width>812</width>
      <height>33</height>
     </rect>
    </property>
@@ -335,9 +338,21 @@
     <property name="title">
      <string>说明</string>
     </property>
+    <addaction name="actionReadme"/>
+    <addaction name="actionContact"/>
    </widget>
    <addaction name="menuReadme"/>
   </widget>
+  <action name="actionReadme">
+   <property name="text">
+    <string>程序说明</string>
+   </property>
+  </action>
+  <action name="actionContact">
+   <property name="text">
+    <string>联系作者</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

@@ -30,5 +30,6 @@ xcopy /Y templates dist\templates
 xcopy /Y /S data dist\data
 xcopy /Y ui dist\ui
 xcopy /Y /S config dist\config
+
 ~~~
 

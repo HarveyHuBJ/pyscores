@@ -49,13 +49,15 @@
         }
         span.name{font-size: 12px;}
         span.level{ display: inline-block; width: 22px; margin-right: 12px; }
-        span.class_a{background-color:rgb(212, 34, 14);}
-        span.class_b{background-color:rgb(239, 139, 68);}
-        span.class_c{background-color:rgb(243, 198, 50);}
-        span.class_d{background-color:rgb(144, 243, 111);}
-        span.class_f{background-color:rgb(5, 92, 35);}
+        span.class_a{background-color:#d4220e;}
+        span.class_b{background-color:#ef8b43;}
+        span.class_c{background-color:#f3c632;}
+        span.class_d{background-color:#90f36f;}
+        span.class_f{background-color:#055c23;}
+
         hr{ height: 2; }
-        .width10p{width:10%;}
+        .width10p{width:10%;} 
+        .alignCenter{text-align: center;}
     </style>
     <base target="_blank">
 </head>
@@ -100,8 +102,9 @@
     <table>
         <tr>
             <th class="width10p">班级排名</th>
-            <th >学生姓名</th>
+            <th>学生姓名</th>
             <th>主课成绩</th>
+            <th>总成绩</th>
             <th>年级排名</th> 
         </tr>
         {% for item in class_rank_students %}
@@ -109,13 +112,18 @@
             <td>{{item.class_rank}}</td>
             <td><a href="./{{class_name}}-{{item.student_name}}.html"> {{item.student_name}}</a></td>
             <td>{{item.score}}</td>
+            <td>{{item.score_all}}</td>
             <td>{{item.grade_rank}}</td> 
         </tr>
         {% endfor%}
 
     </table>
+    <hr/>
 
     <div class="h3">各科成绩分数线分布</div>
+    <div class="alignCenter">
+        <img src="./{{class_name}}-score-distribution.png" alt="科成绩分数线分布图"/>
+    </div>
     <table>
         <tr>
             <th class="width10p">科目</th>

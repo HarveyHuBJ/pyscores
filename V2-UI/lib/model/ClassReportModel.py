@@ -1,3 +1,4 @@
+import pandas as pd
 
 class ClassReportModel:
     def __init__(self):
@@ -7,6 +8,7 @@ class ClassReportModel:
         self.subject_scores = []
         self.subject_distributions = []
         self.level_a_lists = []
+        self.level_distribution_data = pd.DataFrame()
 
 class SubjectStatScoreModel:
     # 统计结果
@@ -36,6 +38,15 @@ class SubjectDistributionModel:
         self.level_d_students = [StudentScore(item) for item in level_d_students] 
         self.level_f_students = [StudentScore(item) for item in level_f_students] 
 
+    def to_dataframe(self):
+        data = {
+            '学科名称': [self.subject] * 5,
+            '分数线': ['A线', 'B线','C线', 'D线','F线'],
+            '人数': [self.level_a_amount, self.level_b_amount, self.level_c_amount, self.level_d_amount, self.level_f_amount]
+        }
+        return pd.DataFrame(data)
+    
+
 class LevelStatisticsModel:
     # 指定级别的学生人员列表
     def __init__(self, index, amount, students):
@@ -45,10 +56,11 @@ class LevelStatisticsModel:
 
 class ClassRankStudentModel:
     # 班级排名学生列表
-    def __init__(self, class_rank, name, score, grade_rank):
+    def __init__(self, class_rank, name, score,score_all, grade_rank):
         self.class_rank = int(class_rank)
         self.student_name = name
         self.score = score
+        self.score_all = score_all
         self.grade_rank = int(grade_rank)
 
 class StudentScore:
